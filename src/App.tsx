@@ -160,13 +160,13 @@ function App() {
 
       if (e.key.toLowerCase() === 'n' && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        const input = document.querySelector('input[placeholder*="Yeni görev"], input[placeholder*="Add a new"]') as HTMLInputElement;
+        const input = document.querySelector('input[placeholder*="Yeni görev"], input[placeholder*="Add a new"], input[placeholder*="görev ekle"]') as HTMLInputElement;
         input?.focus();
       }
 
       if (e.key === '/') {
         e.preventDefault();
-        const search = document.querySelector('input[placeholder="Search tasks..."]') as HTMLInputElement;
+        const search = document.querySelector('input[placeholder*="ara"], input[placeholder*="Search"]') as HTMLInputElement;
         search?.focus();
       }
 
@@ -310,6 +310,8 @@ function App() {
     setDragOverIndex(null);
   };
 
+  // const hasCompleted = getCompletedCount(currentListTodos) > 0;
+
   const toggleTheme = () => setIsDark((d) => !d);
 
   const currentLang = i18n.language?.startsWith('tr') ? 'tr' : 'en';
@@ -373,7 +375,14 @@ function App() {
   const completedInList = currentListTodos.filter(t => t.completed).length;
   const totalInList = currentListTodos.length;
 
-  // === Simple Weekly Stats (practical, not over-engineered) ===
+  // === Premium interactive stats ===
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const dueTodayCount = currentListTodos.filter(t => t.dueDate === todayStr && !t.completed).length;
+  const overdueCount = currentListTodos.filter(t => {
+    if (!t.dueDate || t.completed) return false;
+    return t.dueDate < todayStr;
+  }).length;
+
   const completionRate = totalInList > 0 ? Math.round((completedInList / totalInList) * 100) : 0;
 
   return (
@@ -393,13 +402,14 @@ function App() {
               <button
                 key={list.id}
                 onClick={() => switchList(list.id)}
-                className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition flex justify-between items-center
-                  ${currentListId === list.id 
-                    ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' 
-                    : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'}`}
+                className={`list-btn w-full text-left pl-5 pr-3 py-2 rounded-xl text-sm font-medium transition flex justify-between items-center
+                  ${currentListId === list.id ? 'active' : 'text-slate-600 dark:text-slate-300'}`}
               >
-                {list.name}
-                <span className="text-xs opacity-60">
+                <span className="flex items-center gap-2">
+                  <span className="text-base opacity-70">📋</span>
+                  {list.name}
+                </span>
+                <span className="text-xs opacity-60 tabular-nums">
                   {todos.filter(t => t.listId === list.id).length}
                 </span>
               </button>
@@ -409,9 +419,9 @@ function App() {
           {!isAddingList ? (
             <button 
               onClick={() => setIsAddingList(true)}
-              className="mt-3 w-full text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 px-3 py-1.5"
+              className="mt-3 w-full text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 px-3 py-1.5 font-medium"
             >
-              + New List
+              {t('actions.newList') || '+ Yeni Liste'}
             </button>
           ) : (
             <div className="mt-2 px-2">
@@ -423,13 +433,13 @@ function App() {
                   if (e.key === 'Enter') addNewList();
                   if (e.key === 'Escape') cancelAddList();
                 }}
-                placeholder="List name..."
+                placeholder={t('sidebar.newListPlaceholder') || 'Liste adı'}
                 className="w-full text-sm bg-slate-800 border border-slate-700 rounded px-2 py-1 focus:outline-none focus:border-indigo-500"
                 autoFocus
               />
               <div className="flex gap-1 mt-1">
-                <button onClick={addNewList} className="text-xs px-2 py-0.5 bg-indigo-600 rounded">Add</button>
-                <button onClick={cancelAddList} className="text-xs px-2 py-0.5 hover:bg-slate-700 rounded">Cancel</button>
+                <button onClick={addNewList} className="text-xs px-2 py-0.5 bg-indigo-600 rounded">{t('actions.addList')}</button>
+                <button onClick={cancelAddList} className="text-xs px-2 py-0.5 hover:bg-slate-700 rounded">{t('actions.cancel')}</button>
               </div>
             </div>
           )}
@@ -437,18 +447,22 @@ function App() {
 
         {/* Main Content */}
         <div className="flex-1 min-w-0 p-6">
-          {/* Top Bar */}
-          <div className="flex items-center justify-between mb-4 border-b pb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Taskora</h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Modern görev yöneticisi</p>
+          {/* Premium Top Bar */}
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">T</div>
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Taskora</h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400 -mt-0.5">{t('header.subtitle')}</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-slate-400">Klavye: N ekle, / ara, ? kısayollar</span>
+            <div className="flex items-center gap-3 text-xs text-slate-400">
+              <span className="hidden sm:block">{t('shortcuts.title') || 'Klavye Kısayolları'}: N • / • ?</span>
+              <button onClick={() => setIsShortcutsOpen(true)} className="px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-indigo-600 dark:text-indigo-400">?</button>
             </div>
           </div>
 
-          {/* Header */}
+        {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
               <div className="flex items-center gap-2">
@@ -460,7 +474,7 @@ function App() {
                 )}
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                {totalInList} tasks • {completedInList} done
+                {totalInList} {t('stats.total')?.toLowerCase() || 'tasks'} • {completedInList} {t('stats.done')?.toLowerCase() || 'done'}
               </p>
             </div>
 
@@ -485,143 +499,253 @@ function App() {
             </div>
           </div>
 
-          {/* Add Task - Enhanced Form */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3 mb-5">
-            <div className="flex gap-2 items-center">
+          {/* Mobile List Selector (visible only on small screens) */}
+          <div className="md:hidden mb-4 -mx-1 overflow-x-auto pb-1">
+            <div className="flex gap-2 px-1 min-w-max">
+              {lists.map(list => (
+                <button
+                  key={list.id}
+                  onClick={() => switchList(list.id)}
+                  className={`mobile-list-chip ${currentListId === list.id ? 'active' : ''}`}
+                >
+                  {list.name}
+                  <span className="ml-1 opacity-60 text-xs tabular-nums">({todos.filter(t => t.listId === list.id).length})</span>
+                </button>
+              ))}
+              {!isAddingList && (
+                <button onClick={() => setIsAddingList(true)} className="mobile-list-chip border-dashed">
+                  {t('actions.newList')}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Add Task - Premium Form */}
+          <div className="add-form rounded-3xl p-4 mb-5 border">
+            <div className="text-xs uppercase tracking-[1px] font-semibold text-slate-500 dark:text-slate-400 mb-2 pl-1 flex items-center gap-2">
+              <span>✚</span> {t('add.placeholder').replace('...', '') || 'NEW TASK'}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2.5 items-center">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={t('add.placeholder')}
-                className="flex-1 bg-transparent px-4 py-2 text-base focus:outline-none dark:text-white placeholder:text-slate-400"
+                className="flex-1 w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-[15px] focus:outline-none dark:text-white placeholder:text-slate-400"
               />
 
-              {/* Priority Selector */}
-              <div className="flex gap-1 text-xs">
+              {/* Priority Selector - colorful premium pills */}
+              <div className="flex gap-1.5 text-xs shrink-0" aria-label={t('add.priority')}>
                 {(['high','medium','low'] as const).map(p => (
                   <button
                     key={p}
                     onClick={() => setSelectedPriority(p)}
-                    className={`px-2 py-1 rounded-lg border ${selectedPriority === p ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30' : 'border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                    className={`prio-btn ${p} ${selectedPriority === p ? 'active' : ''}`}
                   >
-                    {p[0].toUpperCase()}
+                    {currentLang === 'tr' 
+                      ? (p === 'high' ? 'Yüksek' : p === 'medium' ? 'Orta' : 'Düşük')
+                      : p.toUpperCase()}
                   </button>
                 ))}
               </div>
 
               {/* Due Date */}
-              <input
-                type="date"
-                value={selectedDueDate}
-                onChange={(e) => setSelectedDueDate(e.target.value)}
-                className="text-sm bg-slate-100 dark:bg-slate-800 rounded-lg px-2 py-1 border-0 focus:ring-1 focus:ring-indigo-500"
-              />
+              <div className="flex items-center gap-1 text-sm shrink-0 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-1">
+                <span className="text-base opacity-60">📅</span>
+                <input
+                  type="date"
+                  value={selectedDueDate}
+                  onChange={(e) => setSelectedDueDate(e.target.value)}
+                  className="bg-transparent text-sm focus:outline-none w-[118px] dark:text-white"
+                  aria-label={t('add.dueDate')}
+                />
+              </div>
 
               <button
                 onClick={handleAdd}
                 disabled={!inputValue.trim()}
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm disabled:opacity-50"
+                className="px-6 py-[13px] bg-accent hover:bg-accent/90 text-white rounded-2xl font-semibold text-sm disabled:opacity-50 shrink-0 active:scale-[0.985] transition"
               >
                 {t('add.button')}
               </button>
             </div>
+            <div className="text-[10px] pl-1 mt-1.5 text-slate-400 dark:text-slate-500">{t('welcome')}</div>
           </div>
 
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t('welcome')}</p>
-
-          {/* Progress + Weekly Stats */}
-          <div className="mb-4">
-            <div className="flex justify-between text-xs mb-1">
-              <span>Completion</span>
-              <span className="font-medium">{completionRate}%</span>
+          {/* Interactive Premium Stats Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+            <div 
+              onClick={() => { setFilter('all'); }}
+              className={`stat-card flex items-baseline justify-between ${filter === 'all' ? 'active' : ''}`}
+            >
+              <div>
+                <div className="stat-label">{t('stats.total')}</div>
+                <div className="stat-value tabular-nums">{totalInList}</div>
+              </div>
+              <div className="text-2xl opacity-40">📋</div>
             </div>
-            <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-accent transition-all" 
-                style={{ width: `${completionRate}%` }}
-              />
+            <div 
+              onClick={() => { setFilter('completed'); }}
+              className={`stat-card flex items-baseline justify-between ${filter === 'completed' ? 'active' : ''}`}
+            >
+              <div>
+                <div className="stat-label">{t('stats.done')}</div>
+                <div className="stat-value tabular-nums">{completedInList}</div>
+              </div>
+              <div className="text-2xl opacity-40">✅</div>
+            </div>
+            <div 
+              onClick={() => { setFilter('today'); }}
+              className={`stat-card flex items-baseline justify-between ${filter === 'today' ? 'active' : ''}`}
+            >
+              <div>
+                <div className="stat-label">{t('stats.today')}</div>
+                <div className="stat-value tabular-nums text-amber-600 dark:text-amber-400">{dueTodayCount}</div>
+              </div>
+              <div className="text-2xl opacity-40">📅</div>
+            </div>
+            <div 
+              onClick={() => { if (overdueCount > 0) setFilter('active'); }}
+              className={`stat-card flex items-baseline justify-between ${overdueCount > 0 ? 'border-red-300 dark:border-red-900/60' : ''}`}
+            >
+              <div>
+                <div className="stat-label">{t('stats.overdue')}</div>
+                <div className={`stat-value tabular-nums ${overdueCount > 0 ? 'text-red-600' : ''}`}>{overdueCount}</div>
+              </div>
+              <div className="text-2xl opacity-40">⚠️</div>
             </div>
           </div>
 
-          {/* Search + Filters */}
+          {/* Progress bar (subtle) + Search + Filters */}
+          <div className="mb-3 flex items-center gap-3">
+            <div className="flex-1">
+              <div className="flex justify-between text-[10px] mb-1 text-slate-500 dark:text-slate-400">
+                <span>{t('stats.completion')}</span>
+                <span className="font-semibold tabular-nums">{completionRate}%</span>
+              </div>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: `${completionRate}%` }} />
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-2 mb-4 items-center">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search tasks..."
-              className="flex-1 min-w-[180px] rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-sm"
+              placeholder={currentLang === 'tr' ? "Görevlerde ara..." : "Search tasks..."}
+              className="flex-1 min-w-[180px] rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-sm focus:border-accent"
             />
 
-            <div className="flex rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 text-sm">
+            <div className="flex flex-wrap gap-1">
               {(['all', 'active', 'today', 'completed'] as const).map(f => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-3 py-1.5 capitalize ${filter === f ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                  className={`filter-pill ${filter === f ? 'active' : ''}`}
                 >
-                  {f}
+                  {t(`filters.${f}`)}
                 </button>
               ))}
             </div>
 
-            <div className="ml-auto flex gap-1.5">
-              <button onClick={() => handleExport(false)} disabled={totalInList === 0} className="text-xs px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700">Export List</button>
-              <button onClick={() => handleExport(true)} disabled={todos.length === 0} className="text-xs px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700">Export All</button>
-              <button onClick={handleImport} className="text-xs px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700">Import</button>
-              <button onClick={handleClearCompleted} disabled={completedInList === 0} className="text-xs px-3 py-1.5 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30">Clear done</button>
+            <div className="ml-auto flex flex-wrap gap-1.5">
+              <button onClick={() => handleExport(false)} disabled={totalInList === 0} className="text-xs px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700">{t('actions.exportList')}</button>
+              <button onClick={() => handleExport(true)} disabled={todos.length === 0} className="text-xs px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700">{t('actions.exportAll')}</button>
+              <button onClick={handleImport} className="text-xs px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700">{t('actions.import')}</button>
+              <button onClick={handleClearCompleted} disabled={completedInList === 0} className="text-xs px-3 py-1.5 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30">{t('actions.clearDone')}</button>
             </div>
           </div>
 
           {/* Task List */}
           {filteredTodos.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 py-16 text-center">
+            <div className="rich-empty">
               {searchTerm ? (
                 <>
-                  <div className="text-4xl mb-3">🔍</div>
-                  <p className="text-slate-500 dark:text-slate-400">“{searchTerm}” için görev bulunamadı</p>
+                  <div className="emoji">🔍</div>
+                  <div className="title">{t('empty.noResults', { term: searchTerm })}</div>
                 </>
               ) : filter === 'today' ? (
                 <>
-                  <div className="text-4xl mb-3">🎉</div>
-                  <p className="text-slate-500 dark:text-slate-400">Bugün için görev yok. Harika!</p>
+                  <div className="emoji">🎉</div>
+                  <div className="title">{t('empty.todayEmpty')}</div>
+                  <div className="subtitle">Yeni bir görev ekleyebilir veya başka filtreye geçebilirsin.</div>
                 </>
               ) : (
                 <>
-                  <div className="text-4xl mb-3">📭</div>
-                  <p className="text-slate-500 dark:text-slate-400">Bu listede henüz görev yok.</p>
-                  <p className="text-sm mt-1">Yukarıdan yeni görev ekleyin veya <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-xs">N</kbd> tuşuna basın</p>
+                  <div className="emoji">📭</div>
+                  <div className="title">{t('empty.title')}</div>
+                  <div className="subtitle">{t('empty.subtitle')}</div>
+                  <div className="flex gap-2 justify-center">
+                    <button 
+                      onClick={() => {
+                        const inputEl = document.querySelector('input[placeholder*="Yeni görev"], input[placeholder*="Add a new"]') as HTMLInputElement;
+                        inputEl?.focus();
+                      }}
+                      className="text-sm px-4 py-1.5 rounded-xl bg-accent text-white font-medium"
+                    >
+                      {t('empty.getStarted')}
+                    </button>
+                    <button 
+                      onClick={() => {
+                        // Add 3 useful sample todos to current list
+                        const now = new Date();
+                        const tmr = new Date(now.getTime() + 86400000).toISOString().slice(0,10);
+                        const samples = [
+                          { text: currentLang === 'tr' ? "Önemli bir toplantı için hazırlık yap" : "Prepare for an important meeting", priority: 'high' as const, due: tmr },
+                          { text: currentLang === 'tr' ? "Haftalık raporu tamamla" : "Finish the weekly report", priority: 'medium' as const, due: '' },
+                          { text: currentLang === 'tr' ? "Ekip ile sync çağrısı ayarla" : "Schedule sync call with team", priority: 'low' as const, due: '' }
+                        ];
+                        const newOnes = samples.map(s => ({
+                          id: crypto.randomUUID(),
+                          text: s.text,
+                          completed: false,
+                          priority: s.priority,
+                          dueDate: s.due || undefined,
+                          listId: currentListId
+                        }));
+                        setTodos(prev => [...prev, ...newOnes]);
+                      }}
+                      className="text-sm px-4 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    >
+                      {t('empty.addSample')}
+                    </button>
+                  </div>
+                  <div className="tip mt-4">{t('empty.tip')}</div>
                 </>
               )}
             </div>
           ) : (
-            <ul className="space-y-2">
-              {filteredTodos.map((todo) => {
-                const realIndex = currentListTodos.findIndex(t => t.id === todo.id);
-                return (
-                  <TodoItem
-                    key={todo.id}
-                    todo={todo}
-                    index={realIndex}
-                    onToggle={handleToggle}
-                    onDelete={handleDelete}
-                    onDragStart={handleDragStart}
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop}
-                    onDragEnd={handleDragEnd}
-                    isDragging={draggedIndex === realIndex}
-                    dragOverIndex={dragOverIndex}
-                  />
-                );
-              })}
-            </ul>
+            <div className="task-container p-2">
+              <ul className="space-y-1.5">
+                {filteredTodos.map((todo) => {
+                  const realIndex = currentListTodos.findIndex(t => t.id === todo.id);
+                  return (
+                    <TodoItem
+                      key={todo.id}
+                      todo={todo}
+                      index={realIndex}
+                      onToggle={handleToggle}
+                      onDelete={handleDelete}
+                      onDragStart={handleDragStart}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                      onDragEnd={handleDragEnd}
+                      isDragging={draggedIndex === realIndex}
+                      dragOverIndex={dragOverIndex}
+                    />
+                  );
+                })}
+              </ul>
+            </div>
           )}
 
           {/* Footer + Shortcuts hint */}
           <div className="mt-8 text-xs text-center text-slate-400 dark:text-slate-500 space-y-1">
             <div>{t('footer')}</div>
-            <div className="opacity-60">Press <kbd className="px-1 bg-slate-200 dark:bg-slate-700 rounded">n</kbd> to add • <kbd className="px-1 bg-slate-200 dark:bg-slate-700 rounded">/</kbd> to search • <kbd className="px-1 bg-slate-200 dark:bg-slate-700 rounded">?</kbd> for settings</div>
+            <div className="opacity-60">Press <kbd>n</kbd> to add • <kbd>/</kbd> to search • <kbd>?</kbd> for shortcuts</div>
           </div>
         </div>
       </div>
@@ -629,15 +753,15 @@ function App() {
       {/* Settings Modal */}
       {isSettingsOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6">
+          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 modal">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Settings</h2>
+              <h2 className="text-xl font-semibold">{t('settings.title')}</h2>
               <button onClick={() => setIsSettingsOpen(false)} className="text-2xl leading-none">×</button>
             </div>
 
             {/* Accent Colors */}
             <div className="mb-5">
-              <p className="text-sm font-medium mb-2">Accent Color</p>
+              <p className="text-sm font-medium mb-2">{t('settings.accent')}</p>
               <div className="flex gap-2">
                 {(['indigo', 'violet', 'emerald', 'rose'] as const).map(color => (
                   <button
@@ -657,7 +781,7 @@ function App() {
 
             {/* License Key for AppSumo */}
             <div className="mb-5">
-              <p className="text-sm font-medium mb-1">License Key (AppSumo)</p>
+              <p className="text-sm font-medium mb-1">{t('settings.license')}</p>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -671,28 +795,28 @@ function App() {
                     if (licenseKey.trim().length > 5) {
                       localStorage.setItem('license-key', licenseKey.trim());
                       setIsPro(true);
-                      alert('License activated! Thank you for supporting Taskora.');
+                      alert(currentLang === 'tr' ? 'Lisans etkinleştirildi! Destek için teşekkürler.' : 'License activated! Thank you.');
                     }
                   }}
                   className="px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700"
                 >
-                  Activate
+                  {t('settings.activate')}
                 </button>
               </div>
-              {isPro && <div className="text-xs text-emerald-600 mt-1">✓ Pro version active</div>}
+              {isPro && <div className="text-xs text-emerald-600 mt-1">{t('settings.proActive')}</div>}
             </div>
 
             {/* Data Management */}
             <div>
-              <p className="text-sm font-medium mb-2">Data</p>
+              <p className="text-sm font-medium mb-2">{t('settings.data')}</p>
               <div className="flex gap-2">
-                <button onClick={() => handleExport(true)} className="flex-1 py-2 text-sm border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">Export All Data</button>
+                <button onClick={() => handleExport(true)} className="flex-1 py-2 text-sm border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">{t('settings.exportAll')}</button>
                 <button onClick={() => {
-                  if (confirm('Clear all data?')) {
+                  if (confirm(t('settings.clearAllConfirm') || 'Clear all data?')) {
                     localStorage.clear();
                     window.location.reload();
                   }
-                }} className="flex-1 py-2 text-sm border border-red-300 text-red-600 rounded-lg hover:bg-red-50">Clear All Data</button>
+                }} className="flex-1 py-2 text-sm border border-red-300 text-red-600 rounded-lg hover:bg-red-50">{t('settings.clearAll')}</button>
               </div>
             </div>
 
@@ -701,12 +825,12 @@ function App() {
                 onClick={() => { setIsSettingsOpen(false); setIsShortcutsOpen(true); }}
                 className="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
               >
-                <i className="fas fa-keyboard mr-1"></i> View Keyboard Shortcuts
+                ⌨️ {t('shortcuts.title')}
               </button>
             </div>
 
             <div className="mt-6 text-xs text-center text-slate-400">
-              Taskora v1.0 • Built for lifetime value
+              Taskora • Premium todo for power users
             </div>
           </div>
         </div>
@@ -715,21 +839,21 @@ function App() {
       {/* Keyboard Shortcuts Modal */}
       {isShortcutsOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setIsShortcutsOpen(false)}>
-          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 modal" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Keyboard Shortcuts</h2>
+              <h2 className="text-xl font-semibold">{t('shortcuts.title')}</h2>
               <button onClick={() => setIsShortcutsOpen(false)} className="text-2xl">×</button>
             </div>
             
             <div className="space-y-3 text-sm">
-              <div className="flex justify-between"><span><kbd className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded">N</kbd></span> <span>Add new task</span></div>
-              <div className="flex justify-between"><span><kbd className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded">/</kbd></span> <span>Focus search</span></div>
-              <div className="flex justify-between"><span><kbd className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded">?</kbd></span> <span>Show shortcuts</span></div>
-              <div className="flex justify-between"><span><kbd className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded">Esc</kbd></span> <span>Close modals / blur</span></div>
+              <div className="flex justify-between"><span><kbd>N</kbd></span> <span>{t('shortcuts.add')}</span></div>
+              <div className="flex justify-between"><span><kbd>/</kbd></span> <span>{t('shortcuts.search')}</span></div>
+              <div className="flex justify-between"><span><kbd>?</kbd></span> <span>{t('shortcuts.shortcutsHelp')}</span></div>
+              <div className="flex justify-between"><span><kbd>Esc</kbd></span> <span>{t('shortcuts.esc')}</span></div>
             </div>
 
             <div className="mt-5 text-xs text-slate-400 text-center">
-              These shortcuts work when you're not typing in a field.
+              {currentLang === 'tr' ? 'Kısayollar yazarken çalışmaz.' : 'Shortcuts do not work while typing in a field.'}
             </div>
           </div>
         </div>

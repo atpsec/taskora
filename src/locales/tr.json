@@ -7,6 +7,7 @@
     "title": "Taskora",
     "subtitle": "Modern ve basit görev listesi"
   },
+  "welcome": "Sol taraftan liste seçin, üstten yeni görev ekleyin. Sürükle bırak ile yeniden sıralayın.",
   "theme": {
     "light": "Açık temaya geç",
     "dark": "Koyu temaya geç"
@@ -14,18 +15,45 @@
   "add": {
     "placeholder": "Yeni görev ekle...",
     "button": "Ekle",
-    "aria": "Görev metni"
+    "aria": "Görev metni",
+    "priority": "Öncelik",
+    "dueDate": "Bitiş tarihi"
   },
   "stats": {
     "empty": "Görev yok",
-    "count": "{{total}} görev • {{completed}} tamamlandı"
+    "count": "{{total}} görev • {{completed}} tamamlandı",
+    "completion": "Tamamlanma",
+    "total": "Toplam",
+    "done": "Tamamlanan",
+    "today": "Bugün",
+    "overdue": "Gecikmiş"
+  },
+  "filters": {
+    "all": "Tümü",
+    "active": "Aktif",
+    "today": "Bugün",
+    "completed": "Tamamlanan"
+  },
+  "actions": {
+    "exportList": "Listeyi Dışa Aktar",
+    "exportAll": "Tümünü Dışa Aktar",
+    "import": "İçe Aktar",
+    "clearDone": "Tamamlananları Temizle",
+    "newList": "+ Yeni Liste",
+    "addList": "Ekle",
+    "cancel": "İptal"
   },
   "clear": "Temizle",
   "empty": {
-    "title": "Henüz görev yok.",
-    "subtitle": "Yukarıdan bir görev ekleyin."
+    "title": "Bu listede henüz görev yok.",
+    "subtitle": "Yukarıdaki formdan yeni görev ekleyin veya N tuşuna basın.",
+    "noResults": "“{{term}}” için görev bulunamadı",
+    "todayEmpty": "Bugün için planlanmış görev yok. Harika!",
+    "getStarted": "Hemen başla",
+    "addSample": "Örnek görevler ekle",
+    "tip": "İpucu: Görevlere öncelik ve tarih ekleyerek daha verimli olun."
   },
-  "footer": "Sürükle & bırak ile sırala • Tamamlananlar gri ve üstü çizili • Veriler tarayıcıda saklanır",
+  "footer": "Sürükle & bırak ile sırala • Tamamlananlar gri + üstü çizili • Veriler tarayıcıda güvende",
   "todoItem": {
     "drag": "Sürükle",
     "dragTitle": "Sürükleyerek sırala",
@@ -35,10 +63,32 @@
     "incompleteAria": "Tamamlandı olarak işaretle"
   },
   "language": {
-    "english": "English",
-    "turkish": "Türkçe",
-    "switch": "Dil değiştir"
+    "english": "EN",
+    "turkish": "TR",
+    "switch": "Dil"
   },
-  "addListPrompt": "Liste adı:",
-  "welcome": "Sol taraftan liste seçin, üstten görev ekleyin. Sürükle-bırak ile sıralayın."
+  "sidebar": {
+    "lists": "Listeler",
+    "newListPlaceholder": "Liste adı",
+    "addNew": "+ Yeni Liste"
+  },
+  "shortcuts": {
+    "title": "Klavye Kısayolları",
+    "add": "Yeni görev ekle",
+    "search": "Aramaya odaklan",
+    "shortcutsHelp": "Kısayolları göster",
+    "esc": "Modalları kapat / alanlardan çık"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "accent": "Vurgu Rengi",
+    "license": "Lisans Anahtarı (AppSumo)",
+    "activate": "Etkinleştir",
+    "proActive": "✓ Pro sürüm aktif",
+    "data": "Veri",
+    "exportAll": "Tüm Verileri Dışa Aktar",
+    "clearAll": "Tüm Verileri Sil",
+    "clearAllConfirm": "Tüm veriler silinsin mi?"
+  },
+  "addListPrompt": "Liste adı:"
 }
