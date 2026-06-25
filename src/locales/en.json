@@ -1,0 +1,43 @@
+{
+  "app": {
+    "name": "Taskora",
+    "tagline": "Modern task management"
+  },
+  "header": {
+    "title": "Taskora",
+    "subtitle": "Modern and simple task list"
+  },
+  "theme": {
+    "light": "Switch to light theme",
+    "dark": "Switch to dark theme"
+  },
+  "add": {
+    "placeholder": "Add a new task...",
+    "button": "Add",
+    "aria": "Task text"
+  },
+  "stats": {
+    "empty": "No tasks",
+    "count": "{{total}} tasks • {{completed}} completed"
+  },
+  "clear": "Clear completed",
+  "empty": {
+    "title": "No tasks yet.",
+    "subtitle": "Add your first task above."
+  },
+  "footer": "Drag & drop to reorder • Completed tasks turn gray and strikethrough • Data saved in browser",
+  "todoItem": {
+    "drag": "Drag",
+    "dragTitle": "Drag to reorder",
+    "delete": "Delete task",
+    "deleteTitle": "Delete",
+    "completeAria": "Mark as incomplete",
+    "incompleteAria": "Mark as complete"
+  },
+  "language": {
+    "english": "English",
+    "turkish": "Türkçe",
+    "switch": "Change language"
+  },
+  "addListPrompt": "List name:"
+}

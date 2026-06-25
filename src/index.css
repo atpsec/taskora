@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles for modern todo app */
+:root {
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+/* Custom styles for todo items, drag feedback etc. */
+.todo-item {
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.todo-item.dragging {
+  opacity: 0.6;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+}
+
+.todo-text.completed {
+  color: #6b7280;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.dark .todo-text.completed {
+  color: #9ca3af;
+}
+
+/* Drag handle visual */
+.drag-handle {
+  cursor: grab;
+  touch-action: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Ensure good mobile touch targets */
+button, .todo-item {
+  min-height: 44px;
+}
+
+/* Accent Color System for commercial theming */
+:root {
+  --accent: 99 102 241; /* indigo-600 */
+}
+
+.accent-indigo { --accent: 99 102 241; }
+.accent-violet { --accent: 139 92 246; }
+.accent-emerald { --accent: 16 185 129; }
+.accent-rose { --accent: 244 63 94; }
+
+.bg-accent {
+  background-color: rgb(var(--accent));
+}
+
+.text-accent {
+  color: rgb(var(--accent));
+}
+
+.border-accent {
+  border-color: rgb(var(--accent));
+}
+
+.focus\:ring-accent:focus {
+  --tw-ring-color: rgb(var(--accent));
+}
+
+.hover\:bg-accent:hover {
+  background-color: rgb(var(--accent));
+}

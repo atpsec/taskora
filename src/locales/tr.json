@@ -1,0 +1,43 @@
+{
+  "app": {
+    "name": "Taskora",
+    "tagline": "Modern görev yönetimi"
+  },
+  "header": {
+    "title": "Taskora",
+    "subtitle": "Modern ve basit görev listesi"
+  },
+  "theme": {
+    "light": "Açık temaya geç",
+    "dark": "Koyu temaya geç"
+  },
+  "add": {
+    "placeholder": "Yeni görev ekle...",
+    "button": "Ekle",
+    "aria": "Görev metni"
+  },
+  "stats": {
+    "empty": "Görev yok",
+    "count": "{{total}} görev • {{completed}} tamamlandı"
+  },
+  "clear": "Temizle",
+  "empty": {
+    "title": "Henüz görev yok.",
+    "subtitle": "Yukarıdan bir görev ekleyin."
+  },
+  "footer": "Sürükle & bırak ile sırala • Tamamlananlar gri ve üstü çizili • Veriler tarayıcıda saklanır",
+  "todoItem": {
+    "drag": "Sürükle",
+    "dragTitle": "Sürükleyerek sırala",
+    "delete": "Görevi sil",
+    "deleteTitle": "Sil",
+    "completeAria": "Tamamlanmadı olarak işaretle",
+    "incompleteAria": "Tamamlandı olarak işaretle"
+  },
+  "language": {
+    "english": "English",
+    "turkish": "Türkçe",
+    "switch": "Dil değiştir"
+  },
+  "addListPrompt": "Liste adı:"
+}
