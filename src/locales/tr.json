@@ -39,5 +39,6 @@
     "turkish": "Türkçe",
     "switch": "Dil değiştir"
   },
-  "addListPrompt": "Liste adı:"
+  "addListPrompt": "Liste adı:",
+  "welcome": "Sol taraftan liste seçin, üstten görev ekleyin. Sürükle-bırak ile sıralayın."
 }

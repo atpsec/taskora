@@ -39,5 +39,6 @@
     "turkish": "Türkçe",
     "switch": "Change language"
   },
-  "addListPrompt": "List name:"
+  "addListPrompt": "List name:",
+  "welcome": "Select a list from the sidebar, add tasks from the top. Drag and drop to reorder."
 }

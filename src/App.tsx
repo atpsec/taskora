@@ -40,7 +40,7 @@ function App() {
       return [
         {
           id: crypto.randomUUID(),
-          text: "Welcome to Taskora!",
+          text: "Taskora'ya hoş geldiniz!",
           completed: false,
           priority: "high",
           dueDate: tomorrow,
@@ -48,14 +48,14 @@ function App() {
         },
         {
           id: crypto.randomUUID(),
-          text: "Try adding a task with priority and date",
+          text: "Öncelik ve tarih ekleyerek yeni görev deneyin",
           completed: false,
           priority: "medium",
           listId: "inbox"
         },
         {
           id: crypto.randomUUID(),
-          text: "Drag me to reorder",
+          text: "Sürükleyerek sıralamayı değiştirin",
           completed: true,
           priority: "low",
           listId: "inbox"
@@ -437,6 +437,17 @@ function App() {
 
         {/* Main Content */}
         <div className="flex-1 min-w-0 p-6">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between mb-4 border-b pb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Taskora</h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Modern görev yöneticisi</p>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-slate-400">Klavye: N ekle, / ara, ? kısayollar</span>
+            </div>
+          </div>
+
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -517,6 +528,8 @@ function App() {
             </div>
           </div>
 
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t('welcome')}</p>
+
           {/* Progress + Weekly Stats */}
           <div className="mb-4">
             <div className="flex justify-between text-xs mb-1">
@@ -567,18 +580,18 @@ function App() {
               {searchTerm ? (
                 <>
                   <div className="text-4xl mb-3">🔍</div>
-                  <p className="text-slate-500 dark:text-slate-400">No tasks found for “{searchTerm}”</p>
+                  <p className="text-slate-500 dark:text-slate-400">“{searchTerm}” için görev bulunamadı</p>
                 </>
               ) : filter === 'today' ? (
                 <>
                   <div className="text-4xl mb-3">🎉</div>
-                  <p className="text-slate-500 dark:text-slate-400">No tasks due today. Well done!</p>
+                  <p className="text-slate-500 dark:text-slate-400">Bugün için görev yok. Harika!</p>
                 </>
               ) : (
                 <>
                   <div className="text-4xl mb-3">📭</div>
-                  <p className="text-slate-500 dark:text-slate-400">No tasks in this list yet.</p>
-                  <p className="text-sm mt-1">Press <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-xs">N</kbd> to add one</p>
+                  <p className="text-slate-500 dark:text-slate-400">Bu listede henüz görev yok.</p>
+                  <p className="text-sm mt-1">Yukarıdan yeni görev ekleyin veya <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-xs">N</kbd> tuşuna basın</p>
                 </>
               )}
             </div>
