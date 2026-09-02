@@ -1,63 +1,37 @@
-# Taskora
+# Taskora Studio
 
-**Modern, practical task manager** — beautiful enough to love, powerful enough to rely on.
+MoneyPrinterTurbo motoruna bağlanan, Türkçe öncelikli yapay zekâ video üretim paneli. Konu, senaryo, format, dil, ses ve materyal kaynağını tek akışta seçerek API üzerinden video işi başlatır.
 
-Built as a clean, offline-first productivity tool with Turkish + English support. Perfect for individuals and small teams who want results without complexity.
-
-## ✨ Key Features
-
-- **Multiple Lists** — Organize Inbox, Work, Personal, Projects etc.
-- **Priority & Due Dates** — High/Medium/Low + visual overdue indicators
-- **Smart Filters & Search** — Today, Active, Completed, priority filters
-- **Drag & Drop** — Reorder tasks naturally
-- **Keyboard First** — `N` to add, `/` to search, `?` for shortcuts
-- **Export / Import** — Full data portability (JSON)
-- **Beautiful Design** — Dark/Light mode + custom accent colors
-- **PWA Ready** — Install as desktop or mobile app
-- **100% Offline** — Your data stays in your browser
-
-## 🚀 Quick Start
+## Hızlı başlangıç
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```
 
-Open http://localhost:5173
+`VITE_MPT_API_URL` değerini çalışan MoneyPrinterTurbo API adresine ayarlayın (varsayılan motor portu `8080`). Değer boş bırakılırsa arayüz demo modunda çalışır.
 
-## 🚀 Deploy to Netlify
-
-This project is optimized for Netlify.
-
-### Connect GitHub (Recommended)
-1. Push this repo to GitHub.
-2. Go to Netlify, click "New site from Git".
-3. Choose your repo.
-4. Build settings (auto-detected):
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-5. Deploy!
-
-Add a `netlify.toml` (already included) for proper SPA routing.
-
-## 📦 GitHub Repository
-
-This project is ready to be published as a public GitHub repo.
-
-Recommended repo name: `taskora`
-
-After pushing, you can enable:
-- GitHub Pages (optional)
-- Netlify deployment from Git
-
-## 🚀 Build for Production
+## Üretim derlemesi
 
 ```bash
+npm run typecheck
 npm run build
+docker build --build-arg VITE_MPT_API_URL=http://host.docker.internal:8080 -t taskora-studio .
+docker run --rm -p 3000:80 taskora-studio
 ```
 
-Output goes to `dist/`.
+## Mimari
 
----
+- React + TypeScript + Vite istemci
+- MoneyPrinterTurbo `/api/v1/videos` iş oluşturma entegrasyonu
+- Nginx tabanlı üretim konteyneri ve healthcheck
+- API anahtarları bu istemcide tutulmaz; anahtarlar MoneyPrinterTurbo sunucusunda yönetilmelidir
 
-Made with ❤️ for people who just want to get things done.
+## Güvenlik notu
+
+MoneyPrinterTurbo API’sini doğrudan internete açmayın. Taskora ile motoru aynı özel ağda çalıştırın, dış erişime kimlik doğrulama ve hız sınırı ekleyin. `.env` dosyalarını repoya göndermeyin.
+
+## Kaynak motor
+
+Video üretim motoru: [MoneyPrinterTurbo](https://github.com/harry0703/MoneyPrinterTurbo) (MIT). Taskora Studio motor kodunu kopyalamaz; HTTP API üzerinden bağlanır.
