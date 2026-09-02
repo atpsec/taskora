@@ -1,5 +1,7 @@
 # Taskora Studio
 
+Canlı arayüz: https://atpsec.github.io/taskora/
+
 MoneyPrinterTurbo motoruna bağlanan, Türkçe öncelikli yapay zekâ video üretim paneli. Konu, senaryo, format, dil, ses ve materyal kaynağını tek akışta seçerek API üzerinden video işi başlatır.
 
 ## Hızlı başlangıç
